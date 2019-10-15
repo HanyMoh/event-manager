@@ -1,5 +1,7 @@
 import React from 'react';
 import { Switch } from 'react-router-dom';
+import { success } from '../helpers/notifications';
+import { handleAjaxError } from '../helpers/helpers';
 import EventForm from './EventForm';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -23,16 +25,14 @@ class Editor extends React.Component {
     axios
       .get('/api/events.json')
       .then(response => this.setState({ events: response.data }))
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch(handleAjaxError);
   }
 
   addEvent(newEvent) {
     axios
       .post('/api/events.json', newEvent)
       .then((response) => {
-        alert('Event Added!');
+        success('Event Added!');
         const savedEvent = response.data;
         this.setState(prevState => ({
           events: [...prevState.events, savedEvent],
@@ -52,7 +52,7 @@ class Editor extends React.Component {
         .delete(`/api/events/${eventId}.json`)
         .then((response) => {
           if (response.status === 204) {
-            alert('Event deleted');
+            success('Event deleted');
             const { history } = this.props;
             history.push('/events');
 
